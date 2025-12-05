@@ -12,7 +12,16 @@ export default {
         "2xl": "1300px",
       },
     },
-    extend: {
+	extend: {
+		animation: {
+			'border-spin': 'border-spin 3s linear infinite',
+		},
+		keyframes: {
+			'border-spin': {
+				'0%': { transform: 'rotate(0deg)' },
+				'100%': { transform: 'rotate(360deg)' },
+			},
+		},
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
