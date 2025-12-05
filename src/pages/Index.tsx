@@ -1,12 +1,12 @@
-import AnimatedDotBackground from "@/components/AnimatedDotBackground";
+import FloatingDotBackground from "@/components/FloatingDotBackground";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 
 const Index = () => {
   return (
     <main className="relative min-h-screen bg-background overflow-x-hidden">
-      {/* Animated Dot Background - Interactive */}
-      <AnimatedDotBackground />
+      {/* Interactive Floating Dot Background */}
+      <FloatingDotBackground />
 
       {/* Noise texture overlay */}
       <div 
