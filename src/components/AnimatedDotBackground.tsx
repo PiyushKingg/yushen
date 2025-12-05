@@ -9,7 +9,9 @@ interface Dot {
   vy: number;
   opacity: number;
   size: number;
+  baseSize: number;
   pulsePhase: number;
+  expandScale: number;
 }
 
 interface Ripple {
@@ -40,19 +42,21 @@ const AnimatedDotBackground = () => {
       x,
       y,
       radius: 0,
-      maxRadius: 200,
-      opacity: 0.6,
+      maxRadius: 250,
+      opacity: 0.8,
     });
 
-    // Push dots away from click
+    // Expand dots near click and push them away
     dotsRef.current.forEach((dot) => {
       const dx = dot.x - x;
       const dy = dot.y - y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < 150) {
-        const force = (150 - distance) / 150;
-        dot.vx += (dx / distance) * force * 8;
-        dot.vy += (dy / distance) * force * 8;
+      if (distance < 180) {
+        const force = (180 - distance) / 180;
+        dot.vx += (dx / distance) * force * 10;
+        dot.vy += (dy / distance) * force * 10;
+        // Expand the dot based on proximity
+        dot.expandScale = Math.max(dot.expandScale, 3 + force * 4);
       }
     });
   }, []);
@@ -86,7 +90,7 @@ const AnimatedDotBackground = () => {
     };
 
     const initDots = () => {
-      const spacing = 40;
+      const spacing = 45;
       const cols = Math.ceil(window.innerWidth / spacing) + 2;
       const rows = Math.ceil(window.innerHeight / spacing) + 2;
       dotsRef.current = [];
@@ -95,6 +99,7 @@ const AnimatedDotBackground = () => {
         for (let j = 0; j < rows; j++) {
           const x = i * spacing;
           const y = j * spacing;
+          const baseSize = 1.5 + Math.random() * 1;
           dotsRef.current.push({
             x,
             y,
@@ -103,8 +108,10 @@ const AnimatedDotBackground = () => {
             vx: (Math.random() - 0.5) * 0.2,
             vy: (Math.random() - 0.5) * 0.2,
             opacity: 0.15 + Math.random() * 0.2,
-            size: 1.5 + Math.random() * 1,
+            size: baseSize,
+            baseSize,
             pulsePhase: Math.random() * Math.PI * 2,
+            expandScale: 1,
           });
         }
       }
@@ -116,23 +123,29 @@ const AnimatedDotBackground = () => {
 
       // Draw and update ripples
       ripplesRef.current = ripplesRef.current.filter((ripple) => {
-        ripple.radius += 4;
-        ripple.opacity *= 0.96;
+        ripple.radius += 5;
+        ripple.opacity *= 0.95;
 
         if (ripple.opacity < 0.01) return false;
 
+        // Outer ring
         ctx.beginPath();
         ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity})`;
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Inner ripple
+        // Inner glow
+        const gradient = ctx.createRadialGradient(
+          ripple.x, ripple.y, 0,
+          ripple.x, ripple.y, ripple.radius
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${ripple.opacity * 0.3})`);
+        gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
         ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.radius * 0.6, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.5})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
 
         return true;
       });
@@ -181,11 +194,17 @@ const AnimatedDotBackground = () => {
           // Damping
           dot.vx *= 0.95;
           dot.vy *= 0.95;
+
+          // Smoothly reduce expand scale back to 1
+          dot.expandScale = dot.expandScale + (1 - dot.expandScale) * 0.05;
         }
 
         // Pulsing opacity
         const pulse = Math.sin(timeRef.current * 2 + dot.pulsePhase) * 0.1;
         const currentOpacity = dot.opacity + pulse;
+
+        // Calculate current size with expansion
+        const currentSize = dot.baseSize * dot.expandScale;
 
         // Glow effect for dots near mouse
         const mdx = mouseRef.current.x - dot.x;
@@ -193,18 +212,20 @@ const AnimatedDotBackground = () => {
         const mouseDistance = Math.sqrt(mdx * mdx + mdy * mdy);
         const glowBoost = mouseDistance < 100 ? (1 - mouseDistance / 100) * 0.4 : 0;
 
-        // Draw outer glow
-        if (glowBoost > 0) {
+        // Draw outer glow when expanded or near mouse
+        if (glowBoost > 0 || dot.expandScale > 1.2) {
+          const glowSize = currentSize * 3;
+          const glowOpacity = Math.max(glowBoost * 0.3, (dot.expandScale - 1) * 0.2);
           ctx.beginPath();
-          ctx.arc(dot.x, dot.y, dot.size * 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${glowBoost * 0.2})`;
+          ctx.arc(dot.x, dot.y, glowSize, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${glowOpacity})`;
           ctx.fill();
         }
 
         // Draw dot
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity + glowBoost})`;
+        ctx.arc(dot.x, dot.y, currentSize, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity + glowBoost + (dot.expandScale - 1) * 0.3})`;
         ctx.fill();
       });
 
