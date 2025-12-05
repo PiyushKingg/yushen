@@ -12,16 +12,7 @@ export default {
         "2xl": "1300px",
       },
     },
-	extend: {
-		animation: {
-			'border-spin': 'border-spin 3s linear infinite',
-		},
-		keyframes: {
-			'border-spin': {
-				'0%': { transform: 'rotate(0deg)' },
-				'100%': { transform: 'rotate(360deg)' },
-			},
-		},
+    extend: {
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -94,12 +85,59 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "border-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
+        "float-slower": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-15px)" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "spin-slower": {
+          "0%": { transform: "rotate(360deg)" },
+          "100%": { transform: "rotate(0deg)" },
+        },
+        "subtle-bounce": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-4px)" },
+        },
+        "fade-in-delayed": {
+          "0%": { opacity: "0" },
+          "50%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "fade-in-delayed-more": {
+          "0%": { opacity: "0" },
+          "70%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.7s ease-out forwards",
         "fade-in": "fade-in 0.7s ease-out forwards",
+        "border-spin": "border-spin 3s linear infinite",
+        "float-slow": "float-slow 6s ease-in-out infinite",
+        "float-slower": "float-slower 8s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "spin-slow": "spin-slow 20s linear infinite",
+        "spin-slower": "spin-slower 30s linear infinite",
+        "subtle-bounce": "subtle-bounce 2s ease-in-out infinite",
+        "fade-in-delayed": "fade-in-delayed 1.5s ease-out forwards",
+        "fade-in-delayed-more": "fade-in-delayed-more 2s ease-out forwards",
       },
     },
   },

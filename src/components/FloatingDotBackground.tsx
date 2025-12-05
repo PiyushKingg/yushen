@@ -70,25 +70,25 @@ const FloatingDotBackground = () => {
     };
 
     const handleClick = (e: MouseEvent) => {
-      // Add ripple effect
+      // Add subtle ripple effect
       ripplesRef.current.push({
         x: e.clientX,
         y: e.clientY,
         radius: 0,
-        maxRadius: 200,
-        opacity: 0.6,
+        maxRadius: 80,
+        opacity: 0.4,
       });
 
-      // Push dots away from click
+      // Gentle push dots away from click
       dotsRef.current.forEach((dot) => {
         const dx = dot.x - e.clientX;
         const dy = dot.y - e.clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) {
-          const force = (200 - dist) / 200;
-          dot.vx += (dx / dist) * force * 8;
-          dot.vy += (dy / dist) * force * 8;
-          dot.targetOpacity = Math.min(0.8, dot.opacity + force * 0.5);
+        if (dist < 100) {
+          const force = (100 - dist) / 100;
+          dot.vx += (dx / dist) * force * 3;
+          dot.vy += (dy / dist) * force * 3;
+          dot.targetOpacity = Math.min(0.6, dot.opacity + force * 0.3);
         }
       });
     };
