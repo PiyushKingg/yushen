@@ -36,6 +36,11 @@ const HeroSection = () => {
           >
             <GlassCard>
               <div className="p-8 md:p-10">
+                {/* Top-left decorative line */}
+                <div className="flex justify-start mb-4">
+                  <div className="w-10 h-[1px] bg-gradient-to-r from-foreground/50 to-transparent" />
+                </div>
+                
                 <p className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-foreground text-center lg:text-left">
                   "Quiet minds create the loudest impact."
                 </p>
