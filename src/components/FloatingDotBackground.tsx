@@ -29,7 +29,7 @@ const FloatingDotBackground = () => {
 
   const initDots = useCallback((width: number, height: number) => {
     const dots: Dot[] = [];
-    const numDots = Math.min(40, Math.floor((width * height) / 25000)); // Fewer dots for performance
+    const numDots = Math.min(35, Math.floor((width * height) / 30000));
     
     for (let i = 0; i < numDots; i++) {
       const x = Math.random() * width;
@@ -39,11 +39,11 @@ const FloatingDotBackground = () => {
         y,
         baseX: x,
         baseY: y,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        radius: Math.random() * 2 + 1.5,
-        opacity: Math.random() * 0.3 + 0.1,
-        targetOpacity: Math.random() * 0.3 + 0.1,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        radius: Math.random() * 1.5 + 1,
+        opacity: Math.random() * 0.2 + 0.1,
+        targetOpacity: Math.random() * 0.2 + 0.1,
       });
     }
     return dots;
@@ -75,8 +75,8 @@ const FloatingDotBackground = () => {
         x: e.clientX,
         y: e.clientY,
         radius: 0,
-        maxRadius: 80,
-        opacity: 0.4,
+        maxRadius: 60,
+        opacity: 0.25,
       });
 
       // Gentle push dots away from click
@@ -84,11 +84,11 @@ const FloatingDotBackground = () => {
         const dx = dot.x - e.clientX;
         const dy = dot.y - e.clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 100) {
-          const force = (100 - dist) / 100;
-          dot.vx += (dx / dist) * force * 3;
-          dot.vy += (dy / dist) * force * 3;
-          dot.targetOpacity = Math.min(0.6, dot.opacity + force * 0.3);
+        if (dist < 80 && dist > 0) {
+          const force = (80 - dist) / 80;
+          dot.vx += (dx / dist) * force * 1.5;
+          dot.vy += (dy / dist) * force * 1.5;
+          dot.targetOpacity = Math.min(0.4, dot.opacity + force * 0.2);
         }
       });
     };
@@ -101,15 +101,15 @@ const FloatingDotBackground = () => {
 
       // Update and draw ripples
       ripplesRef.current = ripplesRef.current.filter((ripple) => {
-        ripple.radius += 4;
-        ripple.opacity *= 0.96;
+        ripple.radius += 2;
+        ripple.opacity *= 0.97;
 
         if (ripple.opacity < 0.01) return false;
 
         ctx.beginPath();
         ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity})`;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.stroke();
 
         return true;
@@ -122,8 +122,8 @@ const FloatingDotBackground = () => {
         dot.y += dot.vy;
 
         // Gentle return to base position
-        dot.vx += (dot.baseX - dot.x) * 0.001;
-        dot.vy += (dot.baseY - dot.y) * 0.001;
+        dot.vx += (dot.baseX - dot.x) * 0.0008;
+        dot.vy += (dot.baseY - dot.y) * 0.0008;
 
         // Apply friction
         dot.vx *= 0.99;
@@ -133,17 +133,17 @@ const FloatingDotBackground = () => {
         const dx = mouseRef.current.x - dot.x;
         const dy = mouseRef.current.y - dot.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150 && dist > 0) {
-          const force = (150 - dist) / 150 * 0.02;
+        if (dist < 120 && dist > 0) {
+          const force = (120 - dist) / 120 * 0.015;
           dot.vx += (dx / dist) * force;
           dot.vy += (dy / dist) * force;
-          dot.targetOpacity = 0.5;
+          dot.targetOpacity = 0.35;
         } else {
-          dot.targetOpacity = Math.random() * 0.3 + 0.1;
+          dot.targetOpacity = Math.random() * 0.2 + 0.1;
         }
 
         // Smooth opacity transition
-        dot.opacity += (dot.targetOpacity - dot.opacity) * 0.05;
+        dot.opacity += (dot.targetOpacity - dot.opacity) * 0.03;
 
         // Boundary wrapping
         if (dot.x < -20) { dot.x = canvas.width + 20; dot.baseX = dot.x; }
@@ -151,37 +151,37 @@ const FloatingDotBackground = () => {
         if (dot.y < -20) { dot.y = canvas.height + 20; dot.baseY = dot.y; }
         if (dot.y > canvas.height + 20) { dot.y = -20; dot.baseY = dot.y; }
 
-        // Draw dot with glow
+        // Draw dot with subtle glow
         const gradient = ctx.createRadialGradient(
           dot.x, dot.y, 0,
-          dot.x, dot.y, dot.radius * 3
+          dot.x, dot.y, dot.radius * 2.5
         );
         gradient.addColorStop(0, `rgba(255, 255, 255, ${dot.opacity})`);
         gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.radius * 3, 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, dot.radius * 2.5, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
 
         // Core dot
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${dot.opacity * 1.5})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${dot.opacity * 1.2})`;
         ctx.fill();
       });
 
-      // Draw connections between nearby dots
+      // Draw subtle connections between nearby dots
       dotsRef.current.forEach((dot, i) => {
         dotsRef.current.slice(i + 1).forEach((other) => {
           const dx = dot.x - other.x;
           const dy = dot.y - other.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < 100) {
             ctx.beginPath();
             ctx.moveTo(dot.x, dot.y);
             ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.05 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.03 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

@@ -25,20 +25,12 @@ const AboutSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen flex items-center justify-center px-6 md:px-16 lg:px-24 py-24 relative"
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-16 lg:px-24 py-24 relative"
     >
-      {/* Animated decorative elements */}
-      <div className="absolute top-20 right-20 w-64 h-64 border border-muted/10 rounded-3xl rotate-12 animate-float-slow" />
-      <div className="absolute bottom-32 left-10 w-40 h-40 border border-muted/15 rounded-2xl -rotate-6 animate-float-slower" />
-      <div className="absolute top-1/3 left-1/4 w-32 h-32 border border-muted/10 rounded-xl rotate-45 animate-pulse-slow" />
-      
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
-
       <div className="container max-w-[1100px] mx-auto relative z-10">
         {/* Section header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ease-out ${
+          className={`text-center mb-12 md:mb-16 transition-all duration-1000 ease-out ${
             isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"
           }`}
         >
@@ -51,7 +43,7 @@ const AboutSection = () => {
           </GlassCard>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Profile Image & Name - Left Column */}
           <div
             className={`lg:col-span-4 flex flex-col items-center transition-all duration-1000 delay-100 ease-out ${
@@ -61,14 +53,8 @@ const AboutSection = () => {
             <GlassCard>
               <div className="p-6 md:p-8 flex flex-col items-center">
                 <div className="relative group">
-                  {/* Animated outer glow */}
-                  <div className="absolute -inset-3 rounded-full bg-gradient-to-br from-foreground/15 via-transparent to-foreground/10 blur-xl opacity-50 group-hover:opacity-80 transition-all duration-700 animate-pulse-slow" />
-                  
-                  {/* Spinning ring decoration */}
-                  <div className="absolute -inset-3 rounded-full border border-dashed border-muted/20 animate-spin-slow" />
-
-                  <div className="relative p-1 rounded-full bg-gradient-to-br from-muted/50 via-muted/30 to-muted/50">
-                    <div className="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border border-muted/50 shadow-xl transition-all duration-700 group-hover:shadow-[0_0_50px_-10px_rgba(255,255,255,0.25)] group-hover:scale-[1.03]">
+                  <div className="relative p-1 rounded-full bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30">
+                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border border-muted/30 shadow-xl transition-all duration-700 group-hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.15)] group-hover:scale-[1.02]">
                       <img
                         src={profileImg}
                         alt="Profile photo of Yushen"
@@ -79,12 +65,12 @@ const AboutSection = () => {
                   </div>
                 </div>
                 
-                {/* Name with animation */}
-                <div className="mt-6 text-center">
+                {/* Name */}
+                <div className="mt-5 text-center">
                   <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                     Yushen
                   </h2>
-                  <div className="mt-2 w-12 h-[2px] mx-auto bg-gradient-to-r from-transparent via-foreground/40 to-transparent" />
+                  <div className="mt-2 w-10 h-[1px] mx-auto bg-gradient-to-r from-transparent via-foreground/30 to-transparent" />
                 </div>
               </div>
             </GlassCard>
@@ -97,28 +83,22 @@ const AboutSection = () => {
             }`}
           >
             <GlassCard>
-              <div className="p-8 md:p-10">
-                {/* Decorative header */}
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-[2px] bg-gradient-to-r from-foreground/50 to-transparent" />
-                  <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Story</span>
-                </div>
-                
-                <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-normal">
-                  I am an ordinary, introverted teenager who prefers calm, low-key spaces. I spend most of my time online, chatting on Discord and keeping my circle small. I do not speak often, but when I do it is usually with people I trust. I enjoy simple conversations, creating things quietly, and building lightweight tools such as websites, bots, and community servers.
+              <div className="p-6 sm:p-8 md:p-10">
+                <p className="text-sm sm:text-base md:text-lg text-foreground/90 leading-relaxed font-normal">
+                  I'm Yushen, also known as Piyush. I'm an ordinary, introverted teenager who prefers calm spaces. I spend most of my time online, chatting on Discord and hanging out with friends. I really enjoy creating things, like websites, projects, and Discord servers, because building and experimenting with new ideas excites me. I really like listening to music, learning new tech skills, and helping others. Well that's all about me, you can join this server below for fun, and chat with amazing people.
                 </p>
 
                 {/* Discord Link */}
-                <div className="mt-10 pt-8 border-t border-muted/30">
+                <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-muted/20">
                   <a
                     href="https://discord.gg/kenrblx"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 px-6 py-3 bg-foreground/10 hover:bg-foreground/20 border border-muted/40 hover:border-foreground/40 rounded-xl text-sm font-medium text-foreground transition-all duration-300 group/link hover:scale-105 hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="inline-flex items-center gap-3 px-5 py-2.5 bg-foreground/5 hover:bg-foreground/10 border border-muted/30 hover:border-foreground/30 rounded-xl text-sm font-medium text-foreground transition-all duration-300 group/link hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <MessageCircle className="w-4 h-4 group-hover/link:animate-pulse" />
                     <span>Discord server</span>
-                    <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
+                    <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover/link:opacity-100 transition-all duration-300" />
                   </a>
                 </div>
               </div>
@@ -128,21 +108,19 @@ const AboutSection = () => {
 
         {/* Footer */}
         <footer
-          className={`mt-32 flex flex-col items-center gap-6 transition-all duration-1000 delay-400 ease-out ${
+          className={`mt-24 md:mt-32 flex flex-col items-center gap-6 transition-all duration-1000 delay-400 ease-out ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
         >
           {/* Decorative line */}
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-muted-foreground/50 to-transparent" />
+          <div className="w-24 h-px bg-gradient-to-r from-transparent via-muted-foreground/30 to-transparent" />
           
           {/* Made by button */}
           <GlassCard>
-            <div className="px-8 py-4 flex items-center gap-3">
-              <span className="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <div className="px-6 py-3 flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
                 Made by Yushen
               </span>
-              <span className="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-pulse" />
             </div>
           </GlassCard>
         </footer>
