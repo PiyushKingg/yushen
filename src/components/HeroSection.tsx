@@ -30,22 +30,18 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Quote - Left Column */}
           <div
-            className={`order-2 lg:order-1 text-center lg:text-left transition-all duration-1000 ease-out ${
+            className={`order-2 lg:order-1 flex justify-center lg:justify-start transition-all duration-1000 ease-out ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
             }`}
           >
-            <GlassCard className="inline-block">
+            <GlassCard>
               <div className="p-8 md:p-10">
-                <blockquote className="relative">
-                  <span className="absolute -top-4 -left-2 text-5xl text-muted-foreground/30 font-serif">"</span>
-                  <p className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-foreground pl-4">
-                    Quiet minds create the loudest impact.
-                  </p>
-                  <span className="absolute -bottom-2 right-0 text-5xl text-muted-foreground/30 font-serif">"</span>
-                </blockquote>
+                <p className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-foreground text-center lg:text-left">
+                  "Quiet minds create the loudest impact."
+                </p>
                 
                 {/* Decorative bottom line */}
-                <div className="mt-6 flex items-center gap-3 justify-end">
+                <div className="mt-6 flex justify-center lg:justify-end">
                   <div className="w-12 h-[1px] bg-gradient-to-l from-foreground/40 to-transparent" />
                 </div>
               </div>
@@ -58,7 +54,7 @@ const HeroSection = () => {
               isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-16 scale-95"
             }`}
           >
-            <GlassCard className="inline-block">
+            <GlassCard>
               <div className="p-5 md:p-6">
                 <div className="relative group">
                   {/* Profile frame */}

@@ -29,7 +29,7 @@ const FloatingDotBackground = () => {
 
   const initDots = useCallback((width: number, height: number) => {
     const dots: Dot[] = [];
-    const numDots = Math.min(35, Math.floor((width * height) / 30000));
+    const numDots = Math.min(45, Math.floor((width * height) / 25000));
     
     for (let i = 0; i < numDots; i++) {
       const x = Math.random() * width;
@@ -39,11 +39,11 @@ const FloatingDotBackground = () => {
         y,
         baseX: x,
         baseY: y,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        radius: Math.random() * 1.5 + 1,
-        opacity: Math.random() * 0.2 + 0.1,
-        targetOpacity: Math.random() * 0.2 + 0.1,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: Math.random() * 2.5 + 2,
+        opacity: Math.random() * 0.3 + 0.15,
+        targetOpacity: Math.random() * 0.3 + 0.15,
       });
     }
     return dots;
@@ -70,25 +70,25 @@ const FloatingDotBackground = () => {
     };
 
     const handleClick = (e: MouseEvent) => {
-      // Add subtle ripple effect
+      // Add ripple effect
       ripplesRef.current.push({
         x: e.clientX,
         y: e.clientY,
         radius: 0,
-        maxRadius: 60,
-        opacity: 0.25,
+        maxRadius: 120,
+        opacity: 0.5,
       });
 
-      // Gentle push dots away from click
+      // Push dots away from click
       dotsRef.current.forEach((dot) => {
         const dx = dot.x - e.clientX;
         const dy = dot.y - e.clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 80 && dist > 0) {
-          const force = (80 - dist) / 80;
-          dot.vx += (dx / dist) * force * 1.5;
-          dot.vy += (dy / dist) * force * 1.5;
-          dot.targetOpacity = Math.min(0.4, dot.opacity + force * 0.2);
+        if (dist < 150 && dist > 0) {
+          const force = (150 - dist) / 150;
+          dot.vx += (dx / dist) * force * 4;
+          dot.vy += (dy / dist) * force * 4;
+          dot.targetOpacity = Math.min(0.6, dot.opacity + force * 0.3);
         }
       });
     };
