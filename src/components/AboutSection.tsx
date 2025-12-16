@@ -52,6 +52,11 @@ const AboutSection = () => {
           >
             <GlassCard>
               <div className="p-6 md:p-8 flex flex-col items-center">
+                {/* Top-left decorative line */}
+                <div className="w-full flex justify-start mb-4">
+                  <div className="w-8 h-[1px] bg-gradient-to-r from-foreground/50 to-transparent" />
+                </div>
+                
                 <div className="relative group">
                   <div className="relative p-1 rounded-full bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30">
                     <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border border-muted/30 shadow-xl transition-all duration-700 group-hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.15)] group-hover:scale-[1.02]">
