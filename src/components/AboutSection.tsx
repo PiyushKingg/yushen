@@ -52,11 +52,6 @@ const AboutSection = () => {
           >
             <GlassCard>
               <div className="p-6 md:p-8 flex flex-col items-center">
-                {/* Top-left decorative line */}
-                <div className="w-full flex justify-start mb-4">
-                  <div className="w-8 h-[1px] bg-gradient-to-r from-foreground/50 to-transparent" />
-                </div>
-                
                 <div className="relative group">
                   <div className="relative p-1 rounded-full bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30">
                     <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border border-muted/30 shadow-xl transition-all duration-700 group-hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.15)] group-hover:scale-[1.02]">
@@ -89,6 +84,11 @@ const AboutSection = () => {
           >
             <GlassCard>
               <div className="p-6 sm:p-8 md:p-10">
+                {/* Top-left decorative line */}
+                <div className="w-full flex justify-start mb-6">
+                  <div className="w-10 h-[1px] bg-gradient-to-r from-foreground/40 to-transparent" />
+                </div>
+                
                 <p className="text-sm sm:text-base md:text-lg text-foreground/90 leading-relaxed font-normal">
                   I'm Yushen, also known as Piyush. I'm an ordinary, introverted teenager who prefers calm spaces. I spend most of my time online, chatting on Discord and hanging out with friends. I really enjoy creating things, like websites, projects, and Discord servers, because building and experimenting with new ideas excites me. I really like listening to music, learning new tech skills, and helping others. Well that's all about me, you can join this server below for fun, and chat with amazing people.
                 </p>
