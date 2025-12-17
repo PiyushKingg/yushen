@@ -7,14 +7,73 @@ interface GlassCardProps {
 }
 
 const GlassCard = ({ children, className }: GlassCardProps) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const [isGlowing, setIsGlowing] = useState(false);
+  const [transform, setTransform] = useState("");
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [sweepPosition, setSweepPosition] = useState(-100);
   const cardRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsGlowing(true);
-    setTimeout(() => setIsGlowing(false), 500);
+    if (!cardRef.current || isAnimating) return;
+    
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Calculate tilt based on click position (tilt toward click)
+    const tiltX = ((y - centerY) / centerY) * 8;
+    const tiltY = ((centerX - x) / centerX) * 8;
+    
+    setIsAnimating(true);
+    
+    // Phase 1: Tilt toward click point
+    setTransform(`perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(0.97)`);
+    
+    // Start light sweep
+    setSweepPosition(-100);
+    requestAnimationFrame(() => {
+      setSweepPosition(200);
+    });
+    
+    // Phase 2: Overshoot bounce back
+    setTimeout(() => {
+      setTransform(`perspective(1000px) rotateX(${-tiltX * 0.3}deg) rotateY(${-tiltY * 0.3}deg) scale(1.01)`);
+    }, 150);
+    
+    // Phase 3: Settle to rest
+    setTimeout(() => {
+      setTransform(`perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`);
+    }, 300);
+    
+    // Reset
+    setTimeout(() => {
+      setIsAnimating(false);
+      setSweepPosition(-100);
+    }, 600);
+  };
+
+  // Subtle hover tilt effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current || isAnimating) return;
+    
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const tiltX = ((y - centerY) / centerY) * 3;
+    const tiltY = ((centerX - x) / centerX) * 3;
+    
+    setTransform(`perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1)`);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isAnimating) {
+      setTransform(`perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`);
+    }
   };
 
   return (
@@ -24,27 +83,47 @@ const GlassCard = ({ children, className }: GlassCardProps) => {
         "relative group cursor-pointer",
         className
       )}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onMouseLeave={() => setIsPressed(false)}
       onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ perspective: "1000px" }}
     >
-      {/* Glass background with premium glow effect */}
+      {/* Main card with 3D transform */}
       <div
+        ref={innerRef}
         className={cn(
-          "relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.06] rounded-2xl transition-all duration-300 ease-out",
-          "hover:bg-white/[0.04] hover:border-white/[0.12]",
-          "shadow-[0_4px_24px_-8px_rgba(0,0,0,0.3)]",
-          isPressed && "scale-[0.98] transition-transform duration-100",
-          isGlowing && "bg-white/[0.06] border-white/[0.2] shadow-[0_0_40px_-10px_rgba(255,255,255,0.15),inset_0_0_30px_-15px_rgba(255,255,255,0.1)]"
+          "relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden",
+          "shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]",
+          "hover:border-white/[0.12]",
+          isAnimating ? "transition-transform duration-150 ease-out" : "transition-all duration-300 ease-out"
         )}
+        style={{ 
+          transform: transform || "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+          transformStyle: "preserve-3d"
+        }}
       >
-        {/* Subtle inner highlight */}
+        {/* Light sweep effect */}
+        <div
+          className="absolute inset-0 pointer-events-none z-20"
+          style={{
+            background: `linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%, transparent 100%)`,
+            transform: `translateX(${sweepPosition}%)`,
+            transition: isAnimating ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+          }}
+        />
+        
+        {/* Subtle inner gradient */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.03] via-transparent to-transparent pointer-events-none" />
+        
+        {/* Dynamic shadow overlay on click */}
         <div 
           className={cn(
-            "absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.03] via-transparent to-transparent pointer-events-none transition-opacity duration-300",
-            isGlowing && "from-white/[0.08]"
-          )} 
+            "absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300",
+            isAnimating ? "opacity-100" : "opacity-0"
+          )}
+          style={{
+            boxShadow: "inset 0 0 60px -20px rgba(255,255,255,0.1)"
+          }}
         />
         
         {/* Content */}
