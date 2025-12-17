@@ -83,18 +83,18 @@ const AboutSection = () => {
             }`}
           >
             <GlassCard>
-              <div className="p-6 sm:p-8 md:p-10">
+              <div className="p-8 sm:p-10 md:p-12">
                 {/* Top-left decorative line */}
-                <div className="w-full flex justify-start mb-6">
-                  <div className="w-10 h-[1px] bg-gradient-to-r from-foreground/40 to-transparent" />
+                <div className="w-full flex justify-start mb-8">
+                  <div className="w-12 h-[1px] bg-gradient-to-r from-foreground/40 to-transparent" />
                 </div>
                 
-                <p className="text-sm sm:text-base md:text-lg text-foreground/90 leading-relaxed font-normal">
+                <p className="text-base sm:text-lg md:text-xl text-foreground/90 leading-relaxed font-normal">
                   I'm Yushen, also known as Piyush. I'm an ordinary, introverted teenager who prefers calm spaces. I spend most of my time online, chatting on Discord and hanging out with friends. I really enjoy creating things, like websites, projects, and Discord servers, because building and experimenting with new ideas excites me. I really like listening to music, learning new tech skills, and helping others. Well that's all about me, you can join this server below for fun, and chat with amazing people.
                 </p>
 
                 {/* Discord Link */}
-                <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-muted/20">
+                <div className="mt-10 md:mt-12 pt-8 md:pt-10 border-t border-muted/20">
                   <a
                     href="https://discord.gg/kenrblx"
                     target="_blank"

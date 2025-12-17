@@ -11,46 +11,58 @@ const GlassCard = ({ children, className, borderAnimation = true }: GlassCardPro
   const [isPressed, setIsPressed] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [borderPosition, setBorderPosition] = useState(0);
+  const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
+  const [showRipple, setShowRipple] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
-  const speedRef = useRef(0.12);
-  const targetSpeedRef = useRef(0.12);
-  const clickStartPosRef = useRef<number | null>(null);
-  const hasCompletedLapRef = useRef(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Start fast animation from current position
-    clickStartPosRef.current = borderPosition;
-    hasCompletedLapRef.current = false;
-    targetSpeedRef.current = 2.5;
+    
+    // Get click position relative to card
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      setClickPosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+      setShowRipple(true);
+      setTimeout(() => setShowRipple(false), 600);
+    }
+    
+    // Start animation from top-left (position 0)
+    setBorderPosition(0);
     setIsAnimating(true);
   };
 
-  // Smooth line animation - always running, speeds up on click for 1 lap
+  // Listen for clicks outside to stop animation
   useEffect(() => {
-    if (!borderAnimation) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        // Instantly stop animation
+        setIsAnimating(false);
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  // Smooth line animation - only runs when isAnimating is true
+  useEffect(() => {
+    if (!borderAnimation || !isAnimating) return;
+    
+    const speed = 1.2; // Smooth constant speed
     
     const animate = () => {
-      // Smooth speed interpolation
-      speedRef.current += (targetSpeedRef.current - speedRef.current) * 0.02;
-      
       setBorderPosition(prev => {
-        const newPosition = (prev + speedRef.current) % 400;
+        const newPosition = prev + speed;
         
-        // Check if we completed a lap after click
-        if (clickStartPosRef.current !== null && !hasCompletedLapRef.current) {
-          const startPos = clickStartPosRef.current;
-          const traveled = newPosition >= startPos 
-            ? newPosition - startPos 
-            : (400 - startPos) + newPosition;
-          
-          if (traveled >= 390) {
-            hasCompletedLapRef.current = true;
-            targetSpeedRef.current = 0.12;
-            clickStartPosRef.current = null;
-            setTimeout(() => setIsAnimating(false), 800);
-          }
+        // Stop after one full lap (400 = full perimeter)
+        if (newPosition >= 400) {
+          setIsAnimating(false);
+          return 0;
         }
         
         return newPosition;
@@ -61,12 +73,12 @@ const GlassCard = ({ children, className, borderAnimation = true }: GlassCardPro
     
     animationRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationRef.current);
-  }, [borderAnimation]);
+  }, [borderAnimation, isAnimating]);
 
   // Calculate line position along the perimeter (starts top-left)
   const getLineStyle = () => {
     const progress = borderPosition / 400;
-    const lineLength = isAnimating ? 70 : 50;
+    const lineLength = 60;
     
     if (progress < 0.25) {
       // Top edge (left to right)
@@ -111,8 +123,6 @@ const GlassCard = ({ children, className, borderAnimation = true }: GlassCardPro
     }
   };
 
-  const lineOpacity = isAnimating ? 0.95 : 0.5;
-
   return (
     <div
       ref={cardRef}
@@ -125,42 +135,43 @@ const GlassCard = ({ children, className, borderAnimation = true }: GlassCardPro
       onMouseLeave={() => setIsPressed(false)}
       onClick={handleClick}
     >
-      {/* Animated single line border */}
-      {borderAnimation && (
+      {/* Animated line border - ONLY visible when animating */}
+      {borderAnimation && isAnimating && (
         <div className="absolute -inset-[1px] rounded-2xl overflow-hidden pointer-events-none">
-          {/* Moving line - always visible but more prominent on hover/click */}
           <div
-            className={cn(
-              "absolute transition-all duration-500",
-              isAnimating ? "opacity-100" : "opacity-30 group-hover:opacity-70"
-            )}
+            className="absolute transition-none"
             style={{
               ...getLineStyle(),
               background: getLineStyle().width === '2px' 
-                ? `linear-gradient(to bottom, transparent, rgba(255,255,255,${lineOpacity}), transparent)`
-                : `linear-gradient(to right, transparent, rgba(255,255,255,${lineOpacity}), transparent)`,
-              boxShadow: isAnimating ? '0 0 8px rgba(255,255,255,0.3)' : 'none',
+                ? `linear-gradient(to bottom, transparent, rgba(255,255,255,0.8), transparent)`
+                : `linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent)`,
+              boxShadow: '0 0 12px rgba(255,255,255,0.4)',
             }}
           />
         </div>
       )}
 
-      {/* Click pulse effect */}
-      <div 
-        className={cn(
-          "absolute -inset-1 rounded-2xl transition-all duration-700 ease-out pointer-events-none",
-          isAnimating ? "bg-white/[0.02] scale-[1.005]" : "bg-transparent scale-100"
-        )}
-      />
+      {/* Click ripple effect */}
+      {showRipple && clickPosition && (
+        <div
+          className="absolute pointer-events-none z-20 rounded-full bg-white/20 animate-ping"
+          style={{
+            left: clickPosition.x - 20,
+            top: clickPosition.y - 20,
+            width: 40,
+            height: 40,
+          }}
+        />
+      )}
 
       {/* Glass background */}
       <div
         className={cn(
-          "relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.06] rounded-2xl transition-all duration-500 ease-out",
+          "relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.06] rounded-2xl transition-all duration-300 ease-out",
           "hover:bg-white/[0.04] hover:border-white/[0.1]",
           "shadow-[0_4px_24px_-8px_rgba(0,0,0,0.2)]",
           isPressed && "scale-[0.995]",
-          isAnimating && "shadow-[0_0_20px_-8px_rgba(255,255,255,0.08)]"
+          isAnimating && "border-white/[0.15] shadow-[0_0_20px_-8px_rgba(255,255,255,0.1)]"
         )}
       >
         {/* Subtle inner highlight */}
